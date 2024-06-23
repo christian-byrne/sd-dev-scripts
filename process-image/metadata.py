@@ -6,7 +6,6 @@ USER_INPUT = {"Comment": "", "Parameters": ""}
 
 
 def main():
-    # Use directory of caller.
     cd = os.getcwd()
 
     if len(sys.argv) != 2:
@@ -23,12 +22,9 @@ def main():
     for key, value in USER_INPUT.items():
         subprocess.run(["exiftool", f"-{key}={value}", target_image])
 
-    print("Metadata edited successfully")
-
     # preview metadata
     print("Previewing metadata...\n\n")
     subprocess.run(["exiftool", target_image])
-    print()
 
 
 if __name__ == "__main__":

@@ -14,11 +14,9 @@ THIS_SCRIPT_PARENT_DIR=$(dirname $THIS_SCRIPT_PATH)
 
 # Check for --help or -h
 if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-    echo "Usage: virtual-env.sh [python_version]"
-    echo "Activate virtual environment and set LD_LIBRARY_PATH."
-    echo "Options:"
-    echo "-h, --help        Show this help message and exit"
-    echo "python_version   Python version to use"
+    echo "Usage: comfy_custom_node_development.sh [custom_node_name]"
+    echo "custom_node_name supports wildcards."
+    echo "Script path: $(realpath $0)"
     exit 0
 fi
 
@@ -28,15 +26,6 @@ if [ -n "$1" ]; then
 fi
 
 # ---------------------------------------------------------------------------- #
-#                                 Start Script                                 #
-# ---------------------------------------------------------------------------- #
 
 # Activate virtual environment, then add LD_LIBRARY_PATH to the environment.
-cd $TEST_ENV
-source $VIRTUAL_ENV_DIRNAME/bin/activate
 export LD_LIBRARY_PATH=$VIRTUAL_ENV/lib64/python$VENV_PYTHON_VERSION/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH
-
-# Cd to ComfyUI directory and run main.py
-COMFY_DIR_FULLPATH=$(find $TEST_ENV -type d -name $COMFY_DIRNAME)
-cd $COMFY_DIR_FULLPATH
-python main.py

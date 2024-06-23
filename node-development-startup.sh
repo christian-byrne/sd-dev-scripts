@@ -4,28 +4,9 @@
 #                                   Constants                                  #
 # ---------------------------------------------------------------------------- #
 
-# ---------------------------- Virtual Environment --------------------------- #
-VIRTUAL_ENV_DIRNAME="venv"
-VENV_PYTHON_VERSION="3.11"
-
-# ----------------------------------- Paths ---------------------------------- #
-TEST_ENV="/home/c_byrne/projects/comfy-testing-environment"
-COMFY_DIRNAME="ComfyUI"
-CUSTOM_NODES_DIRNAME="custom_nodes"
-CHROME_LOGS_DIRNAME="comfy-dev-chrome-logs"
 THIS_SCRIPT_PATH=$(realpath $0)
 THIS_SCRIPT_PARENT_DIR=$(dirname $THIS_SCRIPT_PATH)
-
-# ------------------------------- Comfy Options ------------------------------ #
-export COMFY_PORT="8188"
-export COMFY_STARTUP_DELAY="2.56"
-
-# ---------------------------------- Logging --------------------------------- #
-MAX_LOG_LINES=3000
-
-# ------------------------------ Browser Options ----------------------------- #
-export CHROME_PROFILE_NAME="Default"
-export DEVTOOLS_WINDOW_DEFAULT="console"
+. $THIS_SCRIPT_PARENT_DIR/CONFIG.sh
 
 # ---------------------------------------------------------------------------- #
 #                               Option Arguments                               #
@@ -70,7 +51,6 @@ CHROME_LOGS_PATH="$THIS_SCRIPT_PARENT_DIR/$CHROME_LOGS_DIRNAME/chrome.log"
 touch $CHROME_LOGS_PATH
 # Truncate the log file so it can't be longer than max size.
 tail -n $MAX_LOG_LINES $CHROME_LOGS_PATH > $CHROME_LOGS_PATH 
-export CHROME_LOGS_PATH
 
 # Function to start Chrome after a delay
 start_chrome_after_delay() {
@@ -81,7 +61,12 @@ start_chrome_after_delay() {
     xdotool key F12
 }
 
-# Export the function to make it available in the subshell
+# Make available in the subshell.
+export CHROME_PROFILE_NAME
+export CHROME_LOGS_PATH
+export DEVTOOLS_WINDOW_DEFAULT
+export COMFY_PORT
+export COMFY_STARTUP_DELAY
 export -f start_chrome_after_delay
 
 # Start chrome using a default setting custom profile. Redirect stdout/err to log file. Disown the process.
