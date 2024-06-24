@@ -12,29 +12,79 @@ THIS_SCRIPT_PARENT_DIR=$(dirname $THIS_SCRIPT_PATH)
 #                                    Options                                   #
 # ---------------------------------------------------------------------------- #
 
-# Check for --help or -h
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-    echo "Usage: reactivate-nodes.sh [custom_node_name]"
-    echo "Move all deactivated nodes back to custom_nodes directory."
-    echo "custom_node_name supports wildcards."
-    echo "Temporary directory: $DEACTIVATED_NODES_DIR_FULLPATH"
+VERBOSE=false
+
+# Parse options.
+while [[ "$#" -gt 0 ]]; do
+    key="$1"
+
+    case $key in
+        -d|--deactivate-dir)
+            DIR_ARG="$2"
+            if [ -z "$DIR_ARG" ]; then
+                echo "No directory specified."
+                exit 1
+            fi
+            if [ ! -d "$DIR_ARG" ]; then
+                echo "Directory does not exist: $DIR_ARG"
+                exit 1
+            fi
+            DEACTIVATED_NODES_DIR_FULLPATH="$DIR_ARG"
+            shift
+            shift
+            ;;
+        -v|--verbose)
+            VERBOSE=true
+            shift
+            ;;
+        -i|--ignore)
+            IGNORE_FILES+=("$2")
+            shift
+            shift
+            ;;
+        -c|--comfy-dir-path)
+            COMFY_DIR_FULLPATH="$2"
+            shift
+            shift
+            ;;
+        -h|--help)
+            echo -e "Move all custom nodes in the deactivated_nodes directory to the custom_nodes directory.\n"
+            echo "Usage: reactivate-nodes.sh [options]"
+            echo "Options:"
+            echo "  -c, --comfy-dir-path:   Specify the full path to the ComfyUI directory."
+            echo "  -d, --deactivate-dir:   Specify a custom directory to move custom nodes to."
+            echo "  -i, --ignore:           Specify a file to ignore when moving custom nodes."
+            echo "  -v, --verbose:          Enable verbose output."
+            echo ""
+            echo "Temporary directory: $DEACTIVATED_NODES_DIR_FULLPATH"
+            echo "Ignore files: ${IGNORE_FILES[@]}"
+            echo "Script path: $(realpath $0)"
+            exit 0
+            ;;
+        *) 
+            if [[ $key == -* ]]; then
+                echo "Unknown option: $key"
+                exit 1
+            fi
+            ;;
+    esac
+done
+
+
+# ---------------------------------------------------------------------------- #
+#                               Reactivate Nodes                               #
+# ---------------------------------------------------------------------------- #
+
+if [ "$VERBOSE" = true ]; then
+    echo -e "\nDeactivate all nodes: $DEACTIVATE_ALL_NODES"
+    echo "Deactivate directory: $DEACTIVATED_NODES_DIR_FULLPATH"
+    echo "ComfyUI directory: $COMFY_DIR_FULLPATH"
     echo "Ignore files: ${IGNORE_FILES[@]}"
-    echo "Script path: $(realpath $0)"
-    exit 0
+    echo "Isolated node names: ${ISOLATED_NODE_NAMES[@]}"
+    echo -e "\nFound deactivated nodes dir: $DEACTIVATED_NODES_DIR_FULLPATH"
+    echo "Deactivated nodes dir contents:"
+    ls $DEACTIVATED_NODES_DIR_FULLPATH
 fi
-
-# Set default fallback
-CUSTOM_NODE_NAME=""
-if [ -n "$1" ]; then
-    CUSTOM_NODE_NAME=$1
-fi
-
-# ---------------------------------------------------------------------------- #
-#                                 Isolate Nodes                                #
-# ---------------------------------------------------------------------------- #
-
-echo "Found deactivated nodes dir: $DEACTIVATED_NODES_DIR_FULLPATH"
-ls $DEACTIVATED_NODES_DIR_FULLPATH
 
 # Get list of all deactivated node dirs
 # EXCLUDE: Files in IGNORE_FILES constant, hidden files, .example files, .log files
@@ -59,5 +109,7 @@ for NODE_DIR in $DEACTIVATED_NODE_DIRS; do
     mv $NODE_DIR $CUSTOM_NODES_DIR_FULLPATH
 done
 
-echo "custom_nodes:"
-ls $CUSTOM_NODES_DIR_FULLPATH
+if [ "$VERBOSE" = true ]; then
+    echo -e "\nContents of custom_nodes after reactivation:"
+    ls $CUSTOM_NODES_DIR_FULLPATH
+fi
