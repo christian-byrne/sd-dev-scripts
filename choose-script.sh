@@ -1,5 +1,8 @@
 #!/bin/bash
 
+THIS_DIR=$(dirname $0)
+cd $THIS_DIR
+
 # List all scripts in this dir, then present them as options to the user.
 DIR_SCRIPTS=$(ls -1 | grep -E '\.sh$')
 
