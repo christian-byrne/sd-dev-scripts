@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 default_python_version="3.10"
 default_dir_name="temp-test_ev"

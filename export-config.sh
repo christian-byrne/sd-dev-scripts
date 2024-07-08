@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Export all variables in CONFIG.sh to be available in the environment.
 THIS_SCRIPT_PATH=$(realpath $0)

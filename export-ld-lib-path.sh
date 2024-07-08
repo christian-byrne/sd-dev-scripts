@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ---------------------------------------------------------------------------- #
 #                                   Constants                                  #
@@ -14,10 +14,9 @@ THIS_SCRIPT_PARENT_DIR=$(dirname $THIS_SCRIPT_PATH)
 
 # Check for --help or -h
 if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-    echo "Usage: comfy_custom_node_development.sh [custom_node_name]"
-    echo "custom_node_name supports wildcards."
-    echo "Script path: $(realpath $0)"
-    exit 0
+    echo "Usage: export-ld-lib-path.sh"
+    echo "       export-ld-lib-path.sh <python_version>"
+    return 0
 fi
 
 # $1 is optional argument of python version
