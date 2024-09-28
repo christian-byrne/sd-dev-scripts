@@ -67,6 +67,7 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
+echo "Quarantine targets: ${QUARANTINE_TARGETS[@]}"
 
 # ---------------------------------------------------------------------------- #
 #                                 Isolate Nodes                                #
@@ -86,23 +87,47 @@ echo -e "\n"
 echo "Deactivated nodes dir: $DEACTIVATED_NODES_DIR_FULLPATH"
 echo -e "\n"
 
-# Ensure deactivated_nodes dir exists.
-if [ ! -d "$DEACTIVATED_NODES_DIR_FULLPATH" ]; then
-    mkdir $DEACTIVATED_NODES_DIR_FULLPATH
-fi
 
-# Ensure CUSTOM_NODE_NAME is in the custom_nodes dir.
-if [ ! -d "$CUSTOM_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME" ]; then
-    echo "Custom node not found: $CUSTOM_NODE_NAME"
-    exit 1
-fi
+# Loop through each target and move it to the deactivated_nodes dir.
+for CUSTOM_NODE_NAME in "${QUARANTINE_TARGETS[@]}"; do
+    # Ensure deactivated_nodes dir exists.
+    if [ ! -d "$DEACTIVATED_NODES_DIR_FULLPATH" ]; then
+        mkdir $DEACTIVATED_NODES_DIR_FULLPATH
+    fi
 
-# Ensure will not overwrite a dir in deactivated_nodes.
-if [ -d "$DEACTIVATED_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME" ]; then
-    echo "Error: Custom node already in deactivated_nodes dir: $CUSTOM_NODE_NAME"
-    exit 1
-fi
+    # Ensure CUSTOM_NODE_NAME is in the custom_nodes dir.
+    if [ ! -d "$CUSTOM_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME" ]; then
+        echo "Custom node not found: $CUSTOM_NODE_NAME"
+        exit 1
+    fi
 
-# Move quarantined node to deactivated_nodes dir.
-mv $CUSTOM_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME $DEACTIVATED_NODES_DIR_FULLPATH
+    # Ensure will not overwrite a dir in deactivated_nodes.
+    if [ -d "$DEACTIVATED_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME" ]; then
+        echo "Error: Custom node already in deactivated_nodes dir: $CUSTOM_NODE_NAME"
+        exit 1
+    fi
+
+    # Move quarantined node to deactivated_nodes dir.
+    mv $CUSTOM_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME $DEACTIVATED_NODES_DIR_FULLPATH
+done
+
+# # Ensure deactivated_nodes dir exists.
+# if [ ! -d "$DEACTIVATED_NODES_DIR_FULLPATH" ]; then
+#     mkdir $DEACTIVATED_NODES_DIR_FULLPATH
+# fi
+
+# # Ensure CUSTOM_NODE_NAME is in the custom_nodes dir.
+# if [ ! -d "$CUSTOM_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME" ]; then
+#     echo "Custom node not found: $CUSTOM_NODE_NAME"
+#     exit 1
+# fi
+
+# # Ensure will not overwrite a dir in deactivated_nodes.
+# if [ -d "$DEACTIVATED_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME" ]; then
+#     echo "Error: Custom node already in deactivated_nodes dir: $CUSTOM_NODE_NAME"
+#     exit 1
+# fi
+
+# # Move quarantined node to deactivated_nodes dir.
+# mv $CUSTOM_NODES_DIR_FULLPATH/$CUSTOM_NODE_NAME $DEACTIVATED_NODES_DIR_FULLPATH
 

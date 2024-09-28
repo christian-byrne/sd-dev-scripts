@@ -22,11 +22,11 @@ SD_WEBUI_CLI_ARGS="--xformers --no-half-vae"
 SD_WEBUI_INJECT_FILENAME="launch.py"
 
 # ------------------------------- Comfy Options ------------------------------ #
-COMFY_PORT="8188"
+COMFY_PORT="5173"
 COMFY_STARTUP_DELAY="2.56"
 COMFY_STARTUP_CLI_ARGS=""
 TEST_ENV="$USER_PATH/projects/comfy-testing-environment"
-COMFY_DIRNAME="ComfyUI"
+COMFY_DIRNAME="default-ComfyUI"
 CUSTOM_NODES_DIRNAME="custom_nodes"
 COMFU_INJECT_FILENAME="main.py"
 
